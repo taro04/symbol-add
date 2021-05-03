@@ -1,0 +1,22 @@
+<p>----------------input works!-------------------------</p>
+
+<p>{{addressX}}</p>
+
+<p>{{numx}}</p>
+
+<div>
+    <label id="new-hero">address: </label>
+    <!--<input type="text" for="new-hero" address>-->
+    <input for="new-hero" #address/>
+    <button class="add-button" 
+        (click)="add(address.value); address.value=''" >check</button>
+</div>
+
+<!--  双方向バインディング、入力欄に予め表示される。
+<div>
+    <label for="hero-name" >Hero name: </label>
+    <input id="hero-name" 
+        [(ngModel)]="hero.name" 
+        placeholder="name">
+</div>
+-->
