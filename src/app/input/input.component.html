@@ -1,4 +1,4 @@
-<p>----------------input works!-------------------------</p>
+<p>----------------input works2!-------------------------</p>
 
 <p>{{addressX}}</p>
 
@@ -9,8 +9,21 @@
     <!--<input type="text" for="new-hero" address>-->
     <input for="new-hero" #address/>
     <button class="add-button" 
-        (click)="add(address.value); address.value=''" >check</button>
+        (click)="check(address.value); address.value=''"
+        routerLink="/output"  >check</button>
 </div>
+
+<div>    
+    <button class="add-button" 
+    (click)="getAccounts()" >accounts</button>
+</div>
+
+<!--
+<div>    
+    <button class="add-button" 
+    (click)="settxt()" >set</button>
+</div>
+-->
 
 <!--  双方向バインディング、入力欄に予め表示される。
 <div>
