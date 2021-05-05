@@ -40,6 +40,7 @@ export class RestApiService {
     private symbol: Symbol
   ) { }
 
+  //　apiで/accountsを取ってくるMethod
   getAccounts(): Observable<string>{
     this.log("getAcccout exe")
     const url = `${this.nodeUrl}:3000/accounts`//test
@@ -63,9 +64,10 @@ export class RestApiService {
     }
   }*/
 
-  get_my_AccountInfo(rawAddress:string,url:string): Observable<string | AccountInfo>{
+  get_my_AccountInfo(rawAddress:string): Observable<string | AccountInfo>{
     //this.symbol.valueOf
 
+    const url = this.nodeUrl
     const repositoryFactory= new RepositoryFactoryHttp(url);
     const accountHttp = repositoryFactory.createAccountRepository();
     const address = Address.createFromRawAddress(rawAddress)
@@ -73,11 +75,29 @@ export class RestApiService {
     return accountHttp.getAccountInfo(address)
     .pipe(
     tap(_ => this.logHttp(`accountHttp url ${url}`)),
-    catchError(this.handleError<string>(`accountHttp ${url}`))
+    catchError(this.handleError<string | AccountInfo>(`accountHttp ${url}`))
     )
     //this.address.encoded()    
     //return Observable<AccountInfo>
   }
+  
+  get_my_AccountInfo2(rawAddress:string): Observable<AccountInfo>{
+    //this.symbol.valueOf
+
+    const url = this.nodeUrl
+    const repositoryFactory= new RepositoryFactoryHttp(url);
+    const accountHttp = repositoryFactory.createAccountRepository();
+    const address = Address.createFromRawAddress(rawAddress)
+    
+    return accountHttp.getAccountInfo(address)
+    .pipe(
+    tap(_ => this.logHttp(`accountHttp url ${url}`)),
+    catchError(this.handleError<AccountInfo>(`accountHttp ${url}`))
+    )
+    //this.address.encoded()    
+    //return Observable<AccountInfo>
+  }
+
 
   private handleError<T>(operation="operation",result?:T){
     return (error: any):Observable<T> => {
