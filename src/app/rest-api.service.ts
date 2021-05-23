@@ -23,34 +23,35 @@ import {
 @Injectable({
   providedIn: 'root'
 })
+
 export class RestApiService {
 
-  private nodeUrl = "http://0-0-0-0-0-0-0-0-0-0.quantum-zero.com" //test
+  private nodeUrl = "http://0-0-0-0-0-0-0-0-0-0.quantum-zero.com:3000" //test
 
   constructor(
-    private http: HttpClient,
     private messageService: MessagesService,
-    private address: Address,
+    private http: HttpClient,
+/*    private address: Address,
     private accountHttp: AccountHttp,
     private accountInfo: AccountInfo,
-    private symbol: Symbol
+    private symbol: Symbol*/
   ) { }
 
+  
+
+  //apiでaccountsを取得。
   getAccounts(): Observable<string>{
     this.log("getAcccout exe")
     const url = `${this.nodeUrl}:3000/accounts`//test
     return this.http.get<string>(url)
     .pipe(
-    //  tap(_ => this.log(`feched hero id=${id}`)),
-    //catchError(this.handleError<string>(`get Hero id=${id}`))
-    tap(_ => this.logHttp(`feched url ${url}`)),
-    catchError(this.handleError<string>(`get Hero ${url}`))
+      tap(_ => this.logHttp(`feched url ${url}`)),
+      catchError(this.handleError<string>(`get Hero ${url}`))
     )
   }
 
+  /*
   get_my_AccountInfo(rawAddress:string): Observable<string | AccountInfo>{
-    //this.symbol.valueOf
-
     const url = this.nodeUrl
     const repositoryFactory= new RepositoryFactoryHttp(url);
     const accountHttp = repositoryFactory.createAccountRepository();
@@ -61,10 +62,10 @@ export class RestApiService {
     tap(_ => this.logHttp(`accountHttp url ${url}`)),
     catchError(this.handleError<string | AccountInfo>(`accountHttp ${url}`))
     )
-    //this.address.encoded()    
-    //return Observable<AccountInfo>
   }
+  */
 
+  //sdkで取得。
   get_my_AccountInfo2(rawAddress:string): Observable<AccountInfo>{
     //this.symbol.valueOf
 
@@ -73,15 +74,17 @@ export class RestApiService {
     const accountHttp = repositoryFactory.createAccountRepository();
     const address = Address.createFromRawAddress(rawAddress)
 
+    this.messageService.add(`入力したアドレスは ${rawAddress}`)
+
     return accountHttp.getAccountInfo(address)
     .pipe(
-    tap(_ => this.logHttp(`accountHttp url ${url}`)),
-    catchError(this.handleError<AccountInfo>(`accountHttp ${url}`))
+      tap(_ => this.logHttp(`accountHttp tap ${url}`)),
+      catchError(this.handleError<AccountInfo>(`accountHttp エラー ${url}`))
     )
     //this.address.encoded()    
     //return Observable<AccountInfo>
   }
-
+  
 
   private handleError<T>(operation="operation",result?:T){
     return (error: any):Observable<T> => {
@@ -90,7 +93,7 @@ export class RestApiService {
       console.error(error)
 
       // TODO: ユーザーへの開示のためにエラーの変換処理を改善する
-      this.logHttp(`${operation} failed: ${error.message}`)
+      this.logHttp(`${operation} failed:* ${error.message}`)
 
       // 空の結果を返して、アプリを持続可能にする
       return of(result as T)

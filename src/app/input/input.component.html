@@ -1,29 +1,48 @@
 <p>----------------input works2!-------------------------</p>
 
-<p>{{addressX}}</p>
+<p>addreess input : {{addressX}}</p>
 
-<p>{{numx}}</p>
+<p>num : {{numx}}</p>
 
+<p>symbol address acount: {{symbolAddress}}</p>
+
+<p>address importance: {{imp}}</p>
+
+<p>address publicKey: {{publicKey}}</p>
+
+<!--
 <div>
     <label id="new-hero">address: </label>
-    <!--<input type="text" for="new-hero" address>-->
     <input for="new-hero" #address/>
     <button class="add-button" 
         (click)="check(address.value); address.value=''"
-        routerLink="/output"  >check</button>
+        routerLink="/output" >check</button>
 </div>
+-->
+
+<div>
+    <label id="new-hero">address: </label>
+    <input for="new-hero" #address/>
+    <button class="add-button" 
+        (click)="check(address.value); address.value=''"
+        >check</button>
+</div>
+
 
 <div>    
+    <h5>getAccounts</h5>
     <button class="add-button" 
-    (click)="getAccounts()" >accounts</button>
+    (click)="getAccounts()" >
+    accounts</button>
 </div>
 
-<!--
+
+
 <div>    
     <button class="add-button" 
     (click)="settxt()" >set</button>
 </div>
--->
+
 
 <!--  双方向バインディング、入力欄に予め表示される。
 <div>
