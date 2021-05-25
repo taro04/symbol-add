@@ -1,44 +1,42 @@
 <p>----------------input works2!-------------------------</p>
 
-<p>addreess input : {{addressX}}</p>
+<p>addreess input : {{l_address}}</p>
 
-<p>num : {{numx}}</p>
+<p>num : {{this.restApiService.num}}</p>
 
-<p>symbol address acount: {{symbolAddress}}</p>
-
-<p>address importance: {{imp}}</p>
-
-<p>address publicKey: {{publicKey}}</p>
-
-<!--
 <div>
     <label id="new-hero">address: </label>
+    
+    <!--
     <input for="new-hero" #address/>
     <button class="add-button" 
         (click)="check(address.value); address.value=''"
         routerLink="/output" >check</button>
-</div>
--->
+    -->
+    <input id="hero-name" 
+        [(ngModel)]="l_address" 
+        placeholder="address" >
 
-<div>
-    <label id="new-hero">address: </label>
-    <input for="new-hero" #address/>
     <button class="add-button" 
-        (click)="check(address.value); address.value=''"
-        >check</button>
+        (click)="check(l_address); "
+        routerLink="/output" >check</button>
+
+    <button class="add-button" 
+        (click)="check2(l_address); "
+        routerLink="/output" >check2</button>
 </div>
 
+<p></p>
 
 <div>    
-    <h5>getAccounts</h5>
+    get Accounts from default node
     <button class="add-button" 
     (click)="getAccounts()" >
     accounts</button>
 </div>
 
-
-
 <div>    
+    set default address
     <button class="add-button" 
     (click)="settxt()" >set</button>
 </div>

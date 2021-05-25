@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -7,6 +8,8 @@ import { AppComponent } from './app.component';
 import { InputComponent } from './input/input.component';
 import { MessageComponent } from './message/message.component';
 import { OutputComponent } from './output/output.component';
+
+
 
 @NgModule({
   declarations: [
@@ -18,7 +21,8 @@ import { OutputComponent } from './output/output.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
