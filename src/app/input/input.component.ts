@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RestApiService } from "../rest-api.service"
 import { MessagesService } from "../messages.service"
-import { AccountInfo } from "symbol-sdk"
-import * as SYMSDK from "symbol-sdk"
+import { RepositoryFactoryHttp,AccountInfo,Address } from 'symbol-sdk';
+
 
 @Component({
   selector: 'app-input',
@@ -11,17 +11,11 @@ import * as SYMSDK from "symbol-sdk"
 })
 export class InputComponent implements OnInit {
   
-  addressX:string = "" //address?:stringだと無効
-  numx:number = 0
-  gettxt:string = ""
-  symbolAddress? :AccountInfo  
-  //imp? :SYMSDK.UInt64
-  imp? :SYMSDK.UInt64
-  mscs? :SYMSDK.Mosaic[]
-  publicKey? :string
+  l_address:string = ""
+  aif?:AccountInfo
 
   constructor(
-    private restApiService:RestApiService,
+    public restApiService:RestApiService,
     public messageService:MessagesService
   ) { }
 
@@ -30,25 +24,41 @@ export class InputComponent implements OnInit {
 
   //sdkで取得。
   check(address :string): void{
-    this.addressX=address
-    this.numx++
-    this.messageService.add(`check exe ${this.numx} times ${this.addressX}`)
-    this.restApiService.get_my_AccountInfo2(address)
-    .subscribe(getAdr => this.symbolAddress = getAdr)
-    this.imp = this.symbolAddress?.importance
-    this.mscs = this.symbolAddress?.mosaics
-    this.publicKey = this.symbolAddress?.publicKey
-  }
-  
-  //apiでaccountsを取得。
-  getAccounts():void{
-    this.restApiService.getAccounts()
-        .subscribe(jsonfile => this.gettxt = jsonfile); //jsonfileは.subscribeの引数
-    this.restApiService.log(this.gettxt)
+    //表示用
+    this.restApiService.num++
+    this.messageService.add(`check exe ${this.restApiService.num} times ${address}`)
+    //実回路はserviceで実行。
+    this.restApiService.update_AccountInfo(address)
   }
 
+    //sdkで取得。htmlではなく.ts内で同期するまで待つパターン（作成中）
+    check2(address :string): void{
+      //表示用
+      this.restApiService.num++
+      this.messageService.add(`check2 exe ${this.restApiService.num} times ${address}`)
+      //実回路
+      this.restApiService.get_my_AccountInfo2(address).subscribe(
+        accountInfo => {
+          this.restApiService.add = accountInfo.address.pretty()
+          this.restApiService.imp = accountInfo.importance.toString()
+          this.restApiService.xym = accountInfo.mosaics[0].amount.compact() / 1000 /1000
+          this.restApiService.pub = accountInfo.publicKey
+        }
+      )
+    }
+  
+  //apiでaccountsを取得（作成中）
+  getAccounts():void{
+    this.restApiService.getAccounts()
+        .subscribe( jsonfile => {
+          this.restApiService.log( jsonfile )
+        }); //jsonfileは.subscribeの引数
+  }         //jsonfileを受け取りlogに表示
+
+  //default_addressをset
   settxt():void{
-    this.gettxt="set"
+    this.messageService.add(`set default address ${this.restApiService.default_Address}`)
+    this.l_address = this.restApiService.default_Address
   }
   
 }
