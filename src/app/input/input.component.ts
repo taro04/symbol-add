@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RestApiService } from "../rest-api.service"
 import { MessagesService } from "../messages.service"
+import { TxService } from "../tx.service"
 import { AccountInfo } from "symbol-sdk"
 import * as SYMSDK from "symbol-sdk"
 
@@ -22,7 +23,8 @@ export class InputComponent implements OnInit {
 
   constructor(
     private restApiService:RestApiService,
-    public messageService:MessagesService
+    public messageService:MessagesService,
+    public txService:TxService
   ) { }
 
   ngOnInit(): void {
@@ -51,4 +53,8 @@ export class InputComponent implements OnInit {
     this.gettxt="set"
   }
   
+  tx():void{
+    this.txService.annouce()
+    this.txService.show()
+  }
 }

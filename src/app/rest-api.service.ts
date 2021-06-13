@@ -31,10 +31,6 @@ export class RestApiService {
   constructor(
     private messageService: MessagesService,
     private http: HttpClient,
-/*    private address: Address,
-    private accountHttp: AccountHttp,
-    private accountInfo: AccountInfo,
-    private symbol: Symbol*/
   ) { }
 
   

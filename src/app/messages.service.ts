@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as moment from 'moment'
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,9 @@ export class MessagesService {
   constructor() { }
 
   add(message_str:string){
-    this.message_l.push(message_str)
+    //this.date = +moment();
+    var tm = moment().format("YY-MM-DD HH:mm:ss")
+    this.message_l.push(tm+"-> "+message_str)
   }
 
   clear(){
