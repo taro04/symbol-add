@@ -1,4 +1,18 @@
 <p>-------------------output works!----------------</p>
 
+<ng-container *ngIf="restApiService.accountInfo$ | async as accountInfo">
+    <h5>update_address_info</h5>
+    <p>account address : {{ accountInfo.address.pretty() }}</p>
+    <p>account importance: {{ accountInfo.importance.toString() }}</p>
+    <p>account xym[micro]: {{ accountInfo.mosaics[0].amount.toString() }}</p>
+    <p>account publicKey: {{ accountInfo.publicKey }}</p>
+</ng-container>
+
+<h5>check2</h5>
+<p>account address : {{ restApiService.add }}</p>
+<p>account importance: {{ restApiService.imp }}</p>
+<p>account xym: {{ restApiService.xym }}</p>
+<p>account publicKey: {{ restApiService.pub }}</p>
+
 <button 
 (click)="goBack()">go back</button>
