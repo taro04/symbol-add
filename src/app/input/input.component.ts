@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { RestApiService } from "../rest-api.service"
 import { MessagesService } from "../messages.service"
+
 import { RepositoryFactoryHttp,AccountInfo,Address } from 'symbol-sdk';
+import { TxService } from "../tx.service"
 
 
 @Component({
@@ -15,8 +17,9 @@ export class InputComponent implements OnInit {
   aif?:AccountInfo
 
   constructor(
-    public restApiService:RestApiService,
-    public messageService:MessagesService
+    private restApiService:RestApiService,
+    public messageService:MessagesService,
+    public txService:TxService
   ) { }
 
   ngOnInit(): void {
@@ -61,4 +64,8 @@ export class InputComponent implements OnInit {
     this.l_address = this.restApiService.default_Address
   }
   
+  tx():void{
+    this.txService.annouce()
+    this.txService.show()
+  }
 }
