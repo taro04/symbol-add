@@ -20,7 +20,6 @@ export class TxService {
 
 
   //アカウント作成(Alice → bob)
-
   alice:SYMSDK.Account = SYMSDK.Account.createFromPrivateKey(
     //"896E43895B908AF5847ECCB2645543751D94BD87E71058B003417FED512314AE", 
     "691FC8F2BF9EE6E5BA44FB3CAA3D1F8356C7E744FFF826D6A733E4ECA3720338",
@@ -32,16 +31,30 @@ export class TxService {
   mosaicId = new SYMSDK.MosaicId(this.mosaicIdHex);
 
   // replace with customer address ボブのアドレス
-  rawAddress = 'TA775DNQQAYAZXJD6Q4GLVQLRQD77J2KHZP2K6A';
-  recipientAddress = SYMSDK.Address.createFromRawAddress(this.rawAddress);
+  rawAddress_Bob = 'TA775DNQQAYAZXJD6Q4GLVQLRQD77J2KHZP2K6A';
+  rawAddress     = 'TCWQM773M6N224NUOWEO2SJVOLXTYGPI56JOIBY';
+  recipientAddress = SYMSDK.Address.createFromRawAddress(this.rawAddress_Bob);
 
   deadlineTime = 66666666
   deadline:SYMSDK.Deadline = SYMSDK.Deadline.create(this.deadlineTime)
+  //epochAdjustment = await this.repo.getEpochAdjustment().toPromise();
+  epochAdjustment:number = 1616694977 //getEpochAdjustment()で得られる値
+  x = this.repo.getEpochAdjustment().subscribe(
+    sub => { this.epochAdjustment = sub }
+  );
+
+  //currency: SYMSDK.Currency
+  //y = this.repo.getCurrencies().subscribe(
+  //  cur => { this.currency = cur  }
+  //);
+
   transferTransaction = SYMSDK.TransferTransaction.create(
-    this.deadline,
+    SYMSDK.Deadline.create(this.epochAdjustment),
+    //this.deadline,
     this.recipientAddress,
     [new SYMSDK.Mosaic(this.mosaicId, SYMSDK.UInt64.fromUint(1))],
     SYMSDK.PlainMessage.create('enjoy your ticket'),
+    //[currency.createRelative(10)],
     SYMSDK.NetworkType.TEST_NET,
     SYMSDK.UInt64.fromUint(2000000),
     );
@@ -59,7 +72,7 @@ export class TxService {
   //トランザクションをアナウンス
   public annouce(){
     this.transactionHttp.announce(this.signedTransaction).subscribe(
-      (x) => {this.messageService.add("responce:"+x.message)},
+      (x) => {this.messageService.add("response:"+x.message)},
       (err) => this.messageService.add("error:"+err),
     );
   }
@@ -72,7 +85,71 @@ export class TxService {
     this.messageService.add("SignedTx type is: " + this.signedTransaction.type)
     this.messageService.add("SignedTx net type is: " + this.signedTransaction.networkType)
     this.messageService.add("SignedTx sig pubkey is: " + this.signedTransaction.signerPublicKey)
+    this.messageService.add('epochAdjustment:'+ this.epochAdjustment)
   }
+
+  //以下公式サンプル
+  public example = async (): Promise<void> => {
+    // Network information
+    //const nodeUrl = 'http://ngl-dual-101.testnet.symboldev.network:3000';
+    //const repositoryFactory = new RepositoryFactoryHttp(nodeUrl);
+    const epochAdjustment = await this.repo
+      .getEpochAdjustment()
+      .toPromise();
+    this.messageService.add('sample_epochAdjustment:'+ epochAdjustment)
+
+    const networkType = await this.repo
+      .getNetworkType()
+      .toPromise();
+    const networkGenerationHash = await this.repo
+      .getGenerationHash()
+      .toPromise();
+    // Returns the network main currency, symbol.xym
+    const { currency } = await this.repo
+      .getCurrencies()
+      .toPromise();
+  
+    /* start block 01 */
+    // replace with recipient address
+    const rawAddress = 'TAYNLPIPYIDKRBKKNBNBLVYGXOZS23VZJNFK6ZY';
+    const recipientAddress = SYMSDK.Address.createFromRawAddress(this.rawAddress_Bob);
+  
+    const transferTransaction = SYMSDK.TransferTransaction.create(
+      SYMSDK.Deadline.create(epochAdjustment),
+      recipientAddress,
+      [currency.createRelative(10)],
+      SYMSDK.PlainMessage.create('This is a test message'),
+      networkType,
+      SYMSDK.UInt64.fromUint(2000000),
+    );
+    /* end block 01 */
+  
+    /* start block 02 */
+    // replace with sender private key
+    const privateKey =
+      '691FC8F2BF9EE6E5BA44FB3CAA3D1F8356C7E744FFF826D6A733E4ECA3720338';
+    const account = SYMSDK.Account.createFromPrivateKey(privateKey, networkType);
+    const signedTransaction = account.sign(
+      transferTransaction,
+      networkGenerationHash,
+    );
+    console.log('Payload:', signedTransaction.payload);
+    this.messageService.add('Payload:'+ signedTransaction.payload)
+
+    console.log('Transaction Hash:', signedTransaction.hash);
+    this.messageService.add('Transaction Hash:'+ signedTransaction.hash)
+    /* end block 02 */
+  
+    /* start block 03 */
+    const transactionRepository = this.repo.createTransactionRepository();
+    const response = await transactionRepository
+      .announce(signedTransaction)
+      .toPromise();
+    console.log(response);
+    this.messageService.add('response:'+ response)
+    /* end block 03 */
+  };
+
 }
 
 /*
@@ -91,3 +168,4 @@ listener.confirmed(bob.getAddress())
 run();
 
 */
+

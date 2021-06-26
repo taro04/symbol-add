@@ -1,5 +1,10 @@
 <p>----------------input works2!-------------------------</p>
 
+<div>select network : {{radio}}</div>
+<input type="radio" [(ngModel)]="radio" value="main">{{radio_main}}
+<input type="radio" [(ngModel)]="radio" value="test">{{radio_test}}
+
+
 <p>addreess input : {{l_address}}</p>
 
 <p>num : {{this.restApiService.num}}</p>
@@ -42,8 +47,11 @@
 </div>
 
 <div>    
-    <button class="tx" 
-    (click)="tx()" >tx</button>
+    <button class="tx" (click)="tx()" >tx</button>
+</div>
+
+<div>    
+    <button class="tx_sample" (click)="tx_sample()" >tx_sample</button>
 </div>
 
 <!--  双方向バインディング、入力欄に予め表示される。
