@@ -44,15 +44,12 @@ export class RestApiService {
   //sdkでAccountInfoを取得。
   //htmlではなく.ts内で同期するまで待つパターン（作成中）
   get_my_AccountInfo2(rawAddress:string): Observable<AccountInfo>{
-
     //変数定義
     const repositoryFactory= new RepositoryFactoryHttp(this.nodeUrl);
     const accountHttp = repositoryFactory.createAccountRepository();
     const address = Address.createFromRawAddress(rawAddress)
-
     //表示
     this.messageService.add(`入力したアドレスは ${rawAddress}`)
-
     //観測可能なアカウントインフォを返す
     return accountHttp.getAccountInfo(address)
     .pipe(

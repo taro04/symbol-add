@@ -15,9 +15,12 @@ export class InputComponent implements OnInit {
   
   l_address:string = ""
   aif?:AccountInfo
+  radio_main = "main-net"
+  radio_test = "test-net"
+  radio = ""
 
   constructor(
-    private restApiService:RestApiService,
+    public restApiService:RestApiService,
     public messageService:MessagesService,
     public txService:TxService
   ) { }
@@ -67,5 +70,9 @@ export class InputComponent implements OnInit {
   tx():void{
     this.txService.annouce()
     this.txService.show()
+  }
+
+  tx_sample():void{
+    this.txService.example().then();
   }
 }
