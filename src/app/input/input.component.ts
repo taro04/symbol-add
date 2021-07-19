@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestApiService } from "../rest-api.service"
 import { MessagesService } from "../messages.service"
-
-import { RepositoryFactoryHttp,AccountInfo,Address } from 'symbol-sdk';
 import { TxService } from "../tx.service"
 
 
@@ -14,7 +12,6 @@ import { TxService } from "../tx.service"
 export class InputComponent implements OnInit {
   
   l_address:string = ""
-  aif?:AccountInfo
   radio_main = "main-net"
   radio_test = "test-net"
   radio = ""
@@ -37,8 +34,8 @@ export class InputComponent implements OnInit {
     this.restApiService.update_AccountInfo(address)
   }
 
-    //sdkで取得。htmlではなく.ts内で同期するまで待つパターン（作成中）
-    check2(address :string): void{
+  //sdkで取得。htmlではなく.ts内で同期するまで待つパターン（作成中）
+  check2(address :string): void{
       //表示用
       this.restApiService.num++
       this.messageService.add(`check2 exe ${this.restApiService.num} times ${address}`)
@@ -52,12 +49,20 @@ export class InputComponent implements OnInit {
         }
       )
     }
-  
-  //apiでaccountsを取得（作成中）
-  getAccounts():void{
-    this.restApiService.getAccounts()
+
+  //apiでaccountsを取得
+  getAccounts(address :string):void{
+    this.restApiService.getAccounts(address)
         .subscribe( jsonfile => {
           this.restApiService.log( jsonfile )
+          console.dir(jsonfile)
+          
+          //this.restApiService.log( jdon_type.id )
+          this.restApiService.add = address
+          this.restApiService.imp = JSON.parse(JSON.stringify(jsonfile))["account"]["importance"]
+          this.restApiService.xym = JSON.parse(JSON.stringify(jsonfile))["account"]["mosaics"][0]['amount'] / 1000000 
+          this.restApiService.pub = JSON.parse(JSON.stringify(jsonfile))["account"]["publicKey"]  
+
         }); //jsonfileは.subscribeの引数
   }         //jsonfileを受け取りlogに表示
 
@@ -67,11 +72,13 @@ export class InputComponent implements OnInit {
     this.l_address = this.restApiService.default_Address
   }
   
+  //自作送金関数
   tx():void{
     this.txService.annouce()
     this.txService.show()
   }
 
+  //公式送金関数sample
   tx_sample():void{
     this.txService.example().then();
   }

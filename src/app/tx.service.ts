@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as SYMSDK from "symbol-sdk"
 import { MessagesService } from "./messages.service"
+import { Data } from './class/data'
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +10,14 @@ export class TxService {
 
   constructor(
     private messageService: MessagesService,
+    //private data: Data
   ) { }
 
 
   //接続ノード指定。
-  repo :SYMSDK.RepositoryFactory = new SYMSDK.RepositoryFactoryHttp(
-    "http://ngl-dual-101.testnet.symboldev.network:3000"
-  );
-  networkGenerationHash = '3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155';
-
+  //repo :SYMSDK.RepositoryFactory = new SYMSDK.RepositoryFactoryHttp( this.data.nodeUrl_test );
+  repo :SYMSDK.RepositoryFactory = new SYMSDK.RepositoryFactoryHttp( "http://ngl-dual-101.testnet.symboldev.network:3000" );
+  //repo = this.data.get_repo("test")
 
   //アカウント作成(Alice → bob)
   alice:SYMSDK.Account = SYMSDK.Account.createFromPrivateKey(
@@ -35,8 +35,7 @@ export class TxService {
   rawAddress     = 'TCWQM773M6N224NUOWEO2SJVOLXTYGPI56JOIBY';
   recipientAddress = SYMSDK.Address.createFromRawAddress(this.rawAddress_Bob);
 
-  deadlineTime = 66666666
-  deadline:SYMSDK.Deadline = SYMSDK.Deadline.create(this.deadlineTime)
+
   //epochAdjustment = await this.repo.getEpochAdjustment().toPromise();
   epochAdjustment:number = 1616694977 //getEpochAdjustment()で得られる値
   x = this.repo.getEpochAdjustment().subscribe(
@@ -52,7 +51,7 @@ export class TxService {
     SYMSDK.Deadline.create(this.epochAdjustment),
     //this.deadline,
     this.recipientAddress,
-    [new SYMSDK.Mosaic(this.mosaicId, SYMSDK.UInt64.fromUint(1))],
+    [new SYMSDK.Mosaic(this.mosaicId, SYMSDK.UInt64.fromUint(1*1000*1000))],
     SYMSDK.PlainMessage.create('enjoy your ticket'),
     //[currency.createRelative(10)],
     SYMSDK.NetworkType.TEST_NET,
@@ -61,6 +60,7 @@ export class TxService {
 
   // replace with meta.networkGenerationHash (nodeUrl + '/node/info')
   // Aliceが署名
+  networkGenerationHash = '3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155';
   signedTransaction = this.alice.sign(
     this.transferTransaction,
     this.networkGenerationHash,
