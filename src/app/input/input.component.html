@@ -36,7 +36,8 @@
 <div>    
     get Accounts from default node
     <button class="add-button" 
-    (click)="getAccounts()" >
+    (click)="getAccounts(l_address)"
+    routerLink="/output" >
     accounts</button>
 </div>
 
@@ -54,11 +55,4 @@
     <button class="tx_sample" (click)="tx_sample()" >tx_sample</button>
 </div>
 
-<!--  双方向バインディング、入力欄に予め表示される。
-<div>
-    <label for="hero-name" >Hero name: </label>
-    <input id="hero-name" 
-        [(ngModel)]="hero.name" 
-        placeholder="name">
-</div>
--->
+

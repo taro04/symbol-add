@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MessagesService } from "./messages.service"
 import { catchError, map, tap } from "rxjs/operators"
 import { RepositoryFactoryHttp,AccountInfo,Address } from 'symbol-sdk';
+import { Data } from './class/data'
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,14 @@ import { RepositoryFactoryHttp,AccountInfo,Address } from 'symbol-sdk';
 export class RestApiService {
 
   num :number = 0
-  private nodeUrl = "http://0-0-0-0-0-0-0-0-0-0.quantum-zero.com:3000" //test
+  public nodeUrl_main = "http://0-0-0-0-0-0-0-0-0-0.quantum-zero.com:3000" //main
+
   public default_Address = "NBTF3VWDEH63LIIBKXW2F2XUEY2RYKHWHI2PPUY"
-  private repositoryFactory= new RepositoryFactoryHttp(this.nodeUrl);
-  private accountHttp = this.repositoryFactory.createAccountRepository();
+  //private repositoryFactory= new RepositoryFactoryHttp(this.data.nodeUrl_main);
+  private repositoryFactory= new RepositoryFactoryHttp("http://0-0-0-0-0-0-0-0-0-0.quantum-zero.com:3000");
+  private accountHttp =this.repositoryFactory.createAccountRepository();
+
+  //private accountHttp = this.data.get_repo("main").createAccountRepository();
   private address = Address.createFromRawAddress(this.default_Address)
   accountInfo$: Observable<AccountInfo> = this.accountHttp.getAccountInfo(this.address)
 
@@ -28,24 +33,27 @@ export class RestApiService {
   constructor(
     private messageService: MessagesService,
     private http: HttpClient,
+    //public data: Data
   ) { }
 
   //apiでaccountsを取得（作成中）
-  getAccounts(): Observable<string>{
+  getAccounts(address:string ): Observable<string>{
     this.log("getAcccout exe")
-    const url = `${this.nodeUrl}:3000/accounts`//test
+    const url = `${this.nodeUrl_main}/accounts/${address}`//test
     return this.http.get<string>(url)
     .pipe(
       tap( _ => this.logHttp(`feched url ${url}`)),
       catchError(this.handleError<string>(`get Hero ${url}`))
     )
+
+    
   }
 
   //sdkでAccountInfoを取得。
   //htmlではなく.ts内で同期するまで待つパターン（作成中）
   get_my_AccountInfo2(rawAddress:string): Observable<AccountInfo>{
     //変数定義
-    const repositoryFactory= new RepositoryFactoryHttp(this.nodeUrl);
+    const repositoryFactory= new RepositoryFactoryHttp(this.nodeUrl_main);
     const accountHttp = repositoryFactory.createAccountRepository();
     const address = Address.createFromRawAddress(rawAddress)
     //表示
@@ -53,8 +61,8 @@ export class RestApiService {
     //観測可能なアカウントインフォを返す
     return accountHttp.getAccountInfo(address)
     .pipe(
-      tap(_ => this.logHttp(`accountHttp tap ${this.nodeUrl}`)),
-      catchError(this.handleError<AccountInfo>(`accountHttp エラー ${this.nodeUrl}`))
+      tap(_ => this.logHttp(`accountHttp tap ${this.nodeUrl_main}`)),
+      catchError(this.handleError<AccountInfo>(`accountHttp エラー ${this.nodeUrl_main}`))
     )
   }
 
